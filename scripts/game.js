@@ -7,10 +7,10 @@ class Game {
         this.currentPiece = this.generatePiece();
         this.nextPiece = this.generatePiece();
         this.isPaused = false;
-        this.isGameOver = false; // Add this line
+        this.isGameOver = false;
         this.lastRender = 0;
         this.dropCounter = 0;
-        this.dropInterval = 1000;
+        this.dropInterval = this.scoreBoard.getDropInterval(); // Initialize with level-based speed
         
         if (this.audioManager.isInitialized) {
             this.audioManager.startMusic();
@@ -110,14 +110,15 @@ class Game {
         if (this.checkCollision()) {
             this.currentPiece.y--;
             
-            // Check if the entire piece is not above the board
             const isPieceFullyVisible = this.isPieceFullyVisible();
             
             this.mergePiece();
             const linesCleared = this.board.clearLines();
-            this.scoreBoard.updateScore(linesCleared * 100);
+            this.scoreBoard.updateScore(linesCleared);
             
-            // If piece is not fully on the board, lose a life
+            // Update drop interval based on current level
+            this.dropInterval = this.scoreBoard.getDropInterval();
+            
             if (!isPieceFullyVisible) {
                 if (this.scoreBoard.loseLife()) {
                     this.gameOver();
@@ -207,7 +208,6 @@ class Game {
         this.audioManager.pauseMusic();
         this.scoreBoard.stopTimer();
         
-        // Create game over menu if it doesn't exist
         let gameOverMenu = document.getElementById('game-over-menu');
         if (!gameOverMenu) {
             gameOverMenu = document.createElement('div');
@@ -215,17 +215,16 @@ class Game {
             document.querySelector('.game-container').appendChild(gameOverMenu);
         }
         
-        // Update the menu content
         gameOverMenu.innerHTML = `
             <h2>Game Over!</h2>
             <div class="game-stats">
                 <p>Final Score: <span id="final-score">${this.scoreBoard.score}</span></p>
+                <p>Level: <span id="final-level">${this.scoreBoard.level}</span></p>
                 <p>Time Played: <span id="final-time">${this.scoreBoard.getFormattedTime()}</span></p>
             </div>
             <button onclick="window.game.restart()">Play Again</button>
         `;
         
-        // Show the menu
         gameOverMenu.classList.remove('hidden');
     }
 
@@ -248,6 +247,8 @@ class Game {
         
         if(!this.isPaused) {
             this.dropCounter += deltaTime;
+            this.dropInterval = this.scoreBoard.getDropInterval(); // Update interval based on current level
+            
             if(this.dropCounter > this.dropInterval) {
                 this.dropPiece();
                 this.dropCounter = 0;
@@ -322,11 +323,14 @@ class Game {
         this.isGameOver = false;
         this.dropCounter = 0;
         this.lastRender = 0;
+        this.dropInterval = 1000; // Reset to initial interval
         this.audioManager.startMusic();
         
         // Hide both menus
-        document.getElementById('pause-menu').classList.add('hidden');
-        document.getElementById('game-over-menu').classList.add('hidden');
+        const pauseMenu = document.getElementById('pause-menu');
+        const gameOverMenu = document.getElementById('game-over-menu');
+        
+        if (pauseMenu) pauseMenu.classList.add('hidden');
+        if (gameOverMenu) gameOverMenu.classList.add('hidden');
     }
-
 }
