@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tetris</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+    <div class="game-container">
+        <div class="main-game">
+            <div class="score-board">
+                <div class="timer">Time: <span id="timer">0:00</span></div>
+                <div class="score">Score: <span id="score">0</span></div>
+                <div class="lives">Lives: <span id="lives">3</span></div>
+            </div>
+            
+            <div id="game-board"></div>
+            
+            <div id="pause-menu" class="hidden">
+                <button id="continue">Continue</button>
+                <button id="restart">Restart</button>
+            </div>
+        </div>
+        
+        <div class="next-piece-preview">
+            <div class="next-piece-label">Next Piece:</div>
+            <div class="next-piece-container">
+                <div id="next-piece"></div>
+            </div>
+        </div>
+        <div id="game-over-menu" class="hidden">
+            <h2>Game Over!</h2>
+            <div class="game-stats">
+                <p>Final Score: <span id="final-score">0</span></p>
+                <p>Time Played: <span id="final-time">0:00</span></p>
+            </div>
+            <button onclick="game.restart()">Play Again</button>
+        </div>
+    </div>
+
+    <script src="scripts/audio.js"></script>
+    <script src="scripts/tetromino.js"></script>
+    <script src="scripts/board.js"></script>
+    <script src="scripts/scoreBoard.js"></script>
+    <script src="scripts/pauseMenu.js"></script>
+    <script src="scripts/game.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>
