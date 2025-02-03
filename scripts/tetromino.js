@@ -12,7 +12,7 @@ class Tetromino {
         this.type = type;
         this.shape = this.shapes[type];
         this.x = 3;
-        this.y = 0;
+        this.y = -2; // Start 2 lines above the board
     }
 
     rotate() {

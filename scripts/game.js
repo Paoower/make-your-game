@@ -81,38 +81,74 @@ class Game {
     }
 
     movePiece(direction) {
-        this.currentPiece.x += direction;
-        if (this.checkCollision()) {
-            this.currentPiece.x -= direction;
+        // Only allow movement when the first line of the tetromino is visible
+        if (this.currentPiece.y >= -1) {
+            this.currentPiece.x += direction;
+            if (this.checkCollision()) {
+                this.currentPiece.x -= direction;
+            }
         }
     }
 
+    isPieceFullyVisible() {
+        const piece = this.currentPiece;
+        for (let y = 0; y < piece.shape.length; y++) {
+            for (let x = 0; x < piece.shape[y].length; x++) {
+                if (piece.shape[y][x]) {
+                    // Check if any block of the piece is above the board
+                    if (piece.y + y < 0) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    
     dropPiece() {
         this.currentPiece.y++;
         if (this.checkCollision()) {
             this.currentPiece.y--;
+            
+            // Check if the entire piece is not above the board
+            const isPieceFullyVisible = this.isPieceFullyVisible();
+            
             this.mergePiece();
             const linesCleared = this.board.clearLines();
             this.scoreBoard.updateScore(linesCleared * 100);
-            this.currentPiece = this.nextPiece;
-            this.nextPiece = this.generatePiece();
             
-            if (this.checkCollision()) {
+            // If piece is not fully on the board, lose a life
+            if (!isPieceFullyVisible) {
                 if (this.scoreBoard.loseLife()) {
                     this.gameOver();
                 } else {
                     this.currentPiece = this.generatePiece();
                     this.nextPiece = this.generatePiece();
                 }
+            } else {
+                this.currentPiece = this.nextPiece;
+                this.nextPiece = this.generatePiece();
+                
+                if (this.checkCollision()) {
+                    if (this.scoreBoard.loseLife()) {
+                        this.gameOver();
+                    } else {
+                        this.currentPiece = this.generatePiece();
+                        this.nextPiece = this.generatePiece();
+                    }
+                }
             }
         }
     }
 
     rotatePiece() {
-        const originalShape = this.currentPiece.shape;
-        this.currentPiece.shape = this.currentPiece.rotate();
-        if (this.checkCollision()) {
-            this.currentPiece.shape = originalShape;
+        // Only allow rotation when the first line of the tetromino is visible
+        if (this.currentPiece.y >= -1) {
+            const originalShape = this.currentPiece.shape;
+            this.currentPiece.shape = this.currentPiece.rotate();
+            if (this.checkCollision()) {
+                this.currentPiece.shape = originalShape;
+            }
         }
     }
 
@@ -232,6 +268,7 @@ class Game {
         for (let y = 0; y < piece.shape.length; y++) {
             for (let x = 0; x < piece.shape[y].length; x++) {
                 if (piece.shape[y][x]) {
+                    // Only render blocks that are on or below y=0
                     if (piece.y + y >= 0) {
                         const block = document.createElement('div');
                         block.className = 'tetromino';
