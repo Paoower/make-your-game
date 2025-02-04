@@ -10,7 +10,7 @@ class Game {
         this.isGameOver = false;
         this.lastRender = 0;
         this.dropCounter = 0;
-        this.dropInterval = this.scoreBoard.getDropInterval(); // Initialize with level-based speed
+        this.dropInterval = this.scoreBoard.getDropInterval();
         
         if (this.audioManager.isInitialized) {
             this.audioManager.startMusic();
@@ -116,30 +116,94 @@ class Game {
             const linesCleared = this.board.clearLines();
             this.scoreBoard.updateScore(linesCleared);
             
-            // Update drop interval based on current level
             this.dropInterval = this.scoreBoard.getDropInterval();
             
             if (!isPieceFullyVisible) {
+                // Remove the score check - show message regardless of score
                 if (this.scoreBoard.loseLife()) {
                     this.gameOver();
                 } else {
-                    this.currentPiece = this.generatePiece();
-                    this.nextPiece = this.generatePiece();
+                    this.resetPlayfield();
                 }
             } else {
                 this.currentPiece = this.nextPiece;
                 this.nextPiece = this.generatePiece();
                 
                 if (this.checkCollision()) {
+                    // Remove the score check here as well
                     if (this.scoreBoard.loseLife()) {
                         this.gameOver();
                     } else {
-                        this.currentPiece = this.generatePiece();
-                        this.nextPiece = this.generatePiece();
+                        this.resetPlayfield();
                     }
                 }
             }
         }
+    }
+
+    resetPlayfield() {
+        // Pause the timer
+        this.scoreBoard.pauseTimer();
+        
+        // Clear the board but maintain score and level
+        this.board.clear();
+        
+        // Generate new pieces
+        this.currentPiece = this.generatePiece();
+        this.nextPiece = this.generatePiece();
+        
+        // Reset drop counter
+        this.dropCounter = 0;
+        
+        // Add setTimeout to ensure message appears after state is reset
+        setTimeout(() => {
+            this.showLifeLostMessage();
+        }, 0);
+    }
+
+    showLifeLostMessage() {
+        // Remove any existing life lost message first
+        const existingMessage = document.querySelector('.life-lost-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        const message = document.createElement('div');
+        message.className = 'life-lost-message';
+        message.style.cssText = `
+            position: fixed;  // Changed from absolute to fixed
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            z-index: 1000;  // Increased z-index to ensure visibility
+        `;
+        message.innerHTML = `
+            <h3>Life Lost!</h3>
+            <p>Lives Remaining: ${this.scoreBoard.lives}</p>
+            <p>Press Enter to continue...</p>
+        `;
+        
+        // Changed from board.element to document.body
+        document.body.appendChild(message);
+        
+        this.isPaused = true;
+        
+        const removeMessage = (e) => {
+            // Only respond to Enter key
+            if (e.key === 'Enter') {
+                message.remove();
+                this.isPaused = false;
+                this.scoreBoard.resumeTimer();
+                document.removeEventListener('keydown', removeMessage);
+            }
+        };
+        
+        document.addEventListener('keydown', removeMessage);
     }
 
     rotatePiece() {

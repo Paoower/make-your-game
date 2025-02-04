@@ -7,9 +7,6 @@ class PauseMenu {
         
         this.continueButton.addEventListener('click', () => this.continue());
         this.restartButton.addEventListener('click', () => this.restart());
-        
-        // Ensure the game's existing ESC handling is preserved
-        // Remove this event listener as the pause logic is now in Game class
     }
 
     show() {
