@@ -8,6 +8,7 @@ class Game {
         this.nextPiece = this.generatePiece();
         this.isPaused = false;
         this.isGameOver = false;
+        this.isLifeLostMessageShowing = false; 
         this.lastRender = 0;
         this.dropCounter = 0;
         this.dropInterval = this.scoreBoard.getDropInterval();
@@ -30,8 +31,8 @@ class Game {
     bindControls() {
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                if (this.isGameOver) return; // Ignore ESC if game is over
-                this.togglePause(); // Restore toggle functionality
+                if (this.isGameOver || this.isLifeLostMessageShowing) return; // Add check for life lost message
+                this.togglePause();
                 return;
             }
             
@@ -166,7 +167,7 @@ class Game {
         if (existingMessage) {
             existingMessage.remove();
         }
-    
+        this.isLifeLostMessageShowing = true; 
         const message = document.createElement('div');
         message.className = 'life-lost-message modal-menu';
         message.innerHTML = `
@@ -191,6 +192,7 @@ class Game {
             if (e.key === 'Enter') {
                 message.remove();
                 this.isPaused = false;
+                this.isLifeLostMessageShowing = false; 
                 this.scoreBoard.resumeTimer();
                 document.removeEventListener('keydown', removeMessage);
             }
