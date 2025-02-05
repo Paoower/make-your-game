@@ -162,39 +162,32 @@ class Game {
     }
 
     showLifeLostMessage() {
-        // Remove any existing life lost message first
         const existingMessage = document.querySelector('.life-lost-message');
         if (existingMessage) {
             existingMessage.remove();
         }
-
+    
         const message = document.createElement('div');
-        message.className = 'life-lost-message';
-        message.style.cssText = `
-            position: fixed;  // Changed from absolute to fixed
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            z-index: 1000;  // Increased z-index to ensure visibility
-        `;
+        message.className = 'life-lost-message modal-menu';
         message.innerHTML = `
             <h3>Life Lost!</h3>
             <p>Lives Remaining: ${this.scoreBoard.lives}</p>
             <p>Press Enter to continue...</p>
         `;
         
-        // Changed from board.element to document.body
-        document.body.appendChild(message);
+        // Find or create modal container
+        let modalContainer = document.querySelector('.modal-container');
+        if (!modalContainer) {
+            modalContainer = document.createElement('div');
+            modalContainer.className = 'modal-container';
+            document.querySelector('.main-game').appendChild(modalContainer);
+        }
+        
+        modalContainer.appendChild(message);
         
         this.isPaused = true;
         
         const removeMessage = (e) => {
-            // Only respond to Enter key
             if (e.key === 'Enter') {
                 message.remove();
                 this.isPaused = false;

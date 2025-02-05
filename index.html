@@ -19,9 +19,22 @@
             
             <div id="game-board"></div>
             
-            <div id="pause-menu" class="hidden">
-                <button id="continue">Continue</button>
-                <button id="restart">Restart</button>
+            <!-- Modal container for all overlay menus -->
+            <div class="modal-container">
+                <div id="pause-menu" class="modal-menu hidden">
+                    <button id="continue">Continue</button>
+                    <button id="restart">Restart</button>
+                </div>
+                
+                <div id="game-over-menu" class="modal-menu hidden">
+                    <h2>Game Over!</h2>
+                    <div class="game-stats">
+                        <p>Final Score: <span id="final-score">0</span></p>
+                        <p>Level: <span id="final-level">0</span></p>
+                        <p>Time Played: <span id="final-time">0:00</span></p>
+                    </div>
+                    <button onclick="game.restart()">Play Again</button>
+                </div>
             </div>
         </div>
         
@@ -30,15 +43,6 @@
             <div class="next-piece-container">
                 <div id="next-piece"></div>
             </div>
-        </div>
-        <div id="game-over-menu" class="hidden">
-            <h2>Game Over!</h2>
-            <div class="game-stats">
-                <p>Final Score: <span id="final-score">0</span></p>
-                <p>Level: <span id="final-level">0</span></p>
-                <p>Time Played: <span id="final-time">0:00</span></p>
-            </div>
-            <button onclick="game.restart()">Play Again</button>
         </div>
     </div>
 
