@@ -115,12 +115,17 @@ class Game {
             
             this.mergePiece();
             const linesCleared = this.board.clearLines();
+            
+            // Play line clear sound if lines were cleared
+            if (linesCleared > 0) {
+                this.audioManager.playLineClearSound();
+            }
+            
             this.scoreBoard.updateScore(linesCleared);
             
             this.dropInterval = this.scoreBoard.getDropInterval();
             
             if (!isPieceFullyVisible) {
-                // Remove the score check - show message regardless of score
                 if (this.scoreBoard.loseLife()) {
                     this.gameOver();
                 } else {
@@ -131,7 +136,6 @@ class Game {
                 this.nextPiece = this.generatePiece();
                 
                 if (this.checkCollision()) {
-                    // Remove the score check here as well
                     if (this.scoreBoard.loseLife()) {
                         this.gameOver();
                     } else {

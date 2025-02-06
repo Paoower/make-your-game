@@ -1,16 +1,35 @@
 class AudioManager {
     constructor() {
+        // Background Music Setup
         this.bgMusic = new Audio();
         this.bgMusic.src = 'assets/Tetris.mp3';
         this.bgMusic.loop = true;
-        this.bgMusic.preload = 'auto'; // Preload the audio file
+        this.bgMusic.preload = 'auto';
+        
+        // Add crossfade to smooth loop transition
+        this.bgMusic.addEventListener('timeupdate', () => {
+            const buffer = 0.44; // Buffer time before end of track
+            if (this.bgMusic.currentTime > this.bgMusic.duration - buffer) {
+                this.bgMusic.currentTime = 0;
+                this.bgMusic.play();
+            }
+        });
+        
+        // Line Clear Sound Effect Setup
+        this.lineClearSound = new Audio();
+        this.lineClearSound.src = 'assets/tetris-line-clear-sound.mp3';
+        this.lineClearSound.preload = 'auto';
+        
+        // State tracking
         this.isPlaying = false;
         this.isInitialized = false;
+        this.isLoaded = false;
         
-        // Start loading the audio file immediately
+        // Start loading audio files
         this.bgMusic.load();
+        this.lineClearSound.load();
         
-        // Add event listener for user interaction
+        // Initialize on first click
         document.addEventListener('click', () => {
             if (!this.isInitialized) {
                 this.initializeAudio();
@@ -19,22 +38,20 @@ class AudioManager {
 
         // Add loading event listeners
         this.bgMusic.addEventListener('canplaythrough', () => {
-            console.log('Audio ready to play');
+            console.log('Background music ready to play');
             this.isLoaded = true;
         });
 
         this.bgMusic.addEventListener('error', (e) => {
-            console.error('Audio loading error:', e);
+            console.error('Background music loading error:', e);
         });
     }
 
     initializeAudio() {
         this.isInitialized = true;
-        // Only try to play if the audio is loaded
         if (this.isLoaded) {
             this.startMusic();
         } else {
-            // If not loaded, wait for it
             this.bgMusic.addEventListener('canplaythrough', () => {
                 this.startMusic();
             }, { once: true });
@@ -77,6 +94,20 @@ class AudioManager {
                     .catch(error => {
                         console.log("Audio playback failed:", error);
                     });
+            }
+        }
+    }
+
+    playLineClearSound() {
+        if (this.isInitialized) {
+            // Reset and play the line clear sound
+            this.lineClearSound.currentTime = 0;
+            const playPromise = this.lineClearSound.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Line clear sound playback failed:", error);
+                });
             }
         }
     }
