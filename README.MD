@@ -34,7 +34,7 @@ tetris/
 ## How to Clone and Run
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/tetris-game.git
+   git clone https://zone01normandie.org/git/mtrebert/make-your-game.git
    cd tetris-game
    ```
 
