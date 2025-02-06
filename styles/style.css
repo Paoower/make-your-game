@@ -4,13 +4,47 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Light theme variables */
+    --bg-color: #f5f5f5;
+    --container-bg: white;
+    --board-bg: #f8f9fa;
+    --board-border: #dee2e6;
+    --text-color: #212529;
+    --text-secondary: #495057;
+    --score-bg: #f8f9fa;
+    --modal-bg: rgba(255, 255, 255, 0.95);
+    --button-bg: #228be6;
+    --button-hover: #1c7ed6;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --modal-shadow: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark theme variables */
+[data-theme="dark"] {
+    --bg-color: #1a1a1a;
+    --container-bg: #2d2d2d;
+    --board-bg: #373737;
+    --board-border: #4a4a4a;
+    --text-color: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --score-bg: #373737;
+    --modal-bg: rgba(45, 45, 45, 0.95);
+    --button-bg: #1c7ed6;
+    --button-hover: #228be6;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --modal-shadow: rgba(0, 0, 0, 0.4);
+}
+
 body {
-    background-color: #f5f5f5;
+    background-color: var(--bg-color);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-color);
+    transition: background-color 0.3s ease;
 }
 
 .game-container {
@@ -20,9 +54,9 @@ body {
     width: 100%;
     max-width: 900px;
     padding: 20px;
-    background: white;
+    background: var(--container-bg);
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px var(--shadow-color);
 }
 
 .main-game {
@@ -35,21 +69,21 @@ body {
 #game-board {
     width: 300px;
     height: 600px;
-    background-color: #f8f9fa;
-    border: 2px solid #dee2e6;
+    background-color: var(--board-bg);
+    border: 2px solid var(--board-border);
     border-radius: 4px;
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 10px var(--shadow-color);
 }
 
 .score-board {
     width: 100%;
     margin-bottom: 20px;
     padding: 15px;
-    background: #fff;
+    background: var(--container-bg);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
@@ -57,42 +91,79 @@ body {
 
 .score-board > div {
     padding: 8px;
-    background: #f8f9fa;
+    background: var(--score-bg);
     border-radius: 4px;
     text-align: center;
     font-size: 0.9em;
-    color: #495057;
+    color: var(--text-secondary);
 }
 
 .score-board span {
     font-weight: bold;
-    color: #212529;
+    color: var(--text-color);
+}
+
+.theme-toggle-container {
+    grid-column: span 2;
+    padding: 8px;
+    background: var(--score-bg);
+    border-radius: 4px;
+}
+
+.theme-toggle {
+    background: var(--button-bg);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    margin: 0;
+}
+
+.theme-toggle:hover {
+    background: var(--button-hover);
+    transform: translateY(-1px);
+}
+
+.theme-toggle:active {
+    transform: translateY(0);
+}
+
+.theme-toggle svg {
+    width: 16px;
+    height: 16px;
 }
 
 .next-piece-preview {
     align-self: flex-start;
     margin-top: 83px;
-    background: white;
-    padding: 10px; 
+    background: var(--container-bg);
+    padding: 10px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .next-piece-container {
     width: 120px;
     height: 120px;
-    background-color: #f8f9fa;
-    border: 2px solid #dee2e6;
+    background-color: var(--board-bg);
+    border: 2px solid var(--board-border);
     border-radius: 4px;
     position: relative;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 0 5px var(--shadow-color);
 }
 
 .next-piece-label {
     text-align: center;
     margin-bottom: 10px;
     font-size: 1em;
-    color: #495057;
+    color: var(--text-secondary);
     font-weight: 500;
 }
 
@@ -130,49 +201,50 @@ body {
 }
 
 .modal-menu {
-    background-color: rgba(255, 255, 255, 0.95);
-    padding: 30px;
+    background-color: var(--modal-bg);
+    padding: 20px;
     border-radius: 10px;
     text-align: center;
-    color: #212529;
+    color: var(--text-color);
     pointer-events: auto;
-    min-width: 250px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    max-width: 80%;
+    box-shadow: 0 4px 20px var(--modal-shadow);
     backdrop-filter: blur(5px);
 }
 
 .modal-menu h2 {
-    color: #228be6;
-    font-size: 1.8em;
-    margin-bottom: 20px;
+    color: var(--button-bg);
+    font-size: 1.4em;
+    margin-bottom: 15px;
     text-transform: uppercase;
 }
 
 .game-stats {
-    margin: 20px 0;
-    font-size: 1.2em;
+    margin: 15px 0;
+    font-size: 1.1em;
 }
 
 .game-stats p {
-    margin: 10px 0;
-    color: #495057;
+    margin: 8px 0;
+    color: var(--text-secondary);
 }
 
 .modal-menu button {
-    background: #228be6;
+    background: var(--button-bg);
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 8px 16px;
     border-radius: 6px;
-    font-size: 1em;
+    font-size: 0.9em;
     cursor: pointer;
     transition: all 0.2s ease;
     margin: 5px;
-    width: 150px;
+    width: 120px;
 }
 
 .modal-menu button:hover {
-    background: #1c7ed6;
+    background: var(--button-hover);
     transform: translateY(-1px);
 }
 
@@ -181,12 +253,12 @@ body {
 }
 
 .life-lost-message {
-    background-color: rgba(255, 255, 255, 0.95);
+    background-color: var(--modal-bg);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
-    color: #212529;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    color: var(--text-color);
+    box-shadow: 0 4px 20px var(--modal-shadow);
     backdrop-filter: blur(5px);
 }
 
@@ -209,7 +281,7 @@ body {
     }
 
     .next-piece-preview {
-        margin-top: 20px; 
+        margin-top: 20px;
         align-self: center;
     }
 
@@ -229,12 +301,17 @@ body {
     }
 
     .modal-menu {
-        min-width: 200px;
-        padding: 20px;
+        min-width: 180px;
+        padding: 15px;
     }
 
     .modal-menu h2 {
-        font-size: 1.5em;
+        font-size: 1.2em;
+    }
+
+    .modal-menu button {
+        padding: 6px 12px;
+        width: 100px;
     }
 }
 
@@ -258,23 +335,34 @@ body {
         padding: 10px;
     }
 
+    .theme-toggle-container {
+        grid-column: span 1;
+    }
+
     .next-piece-container {
         width: 80px;
         height: 80px;
     }
 
     .modal-menu {
-        min-width: 180px;
-        padding: 15px;
+        min-width: 160px;
+        padding: 12px;
     }
 
     .modal-menu h2 {
-        font-size: 1.3em;
+        font-size: 1.1em;
+        margin-bottom: 10px;
     }
 
     .modal-menu button {
-        padding: 10px 20px;
+        padding: 5px 10px;
+        font-size: 0.8em;
+        width: 90px;
+        margin: 3px;
+    }
+
+    .game-stats {
         font-size: 0.9em;
-        width: 130px;
+        margin: 10px 0;
     }
 }
