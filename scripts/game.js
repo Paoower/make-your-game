@@ -304,9 +304,12 @@ class Game {
     update(time = 0) {
         const deltaTime = time - this.lastRender;
         
+        // Always render the next piece preview, regardless of pause state
+        this.renderNextPiece();
+        
         if(!this.isPaused) {
             this.dropCounter += deltaTime;
-            this.dropInterval = this.scoreBoard.getDropInterval(); // Update interval based on current level
+            this.dropInterval = this.scoreBoard.getDropInterval();
             
             if(this.dropCounter > this.dropInterval) {
                 this.dropPiece();
@@ -316,7 +319,6 @@ class Game {
             this.scoreBoard.updateTimer();
             this.board.render();
             this.renderCurrentPiece();
-            this.renderNextPiece();
         }
         
         this.lastRender = time;
@@ -346,13 +348,16 @@ class Game {
         const nextPiecePreview = document.getElementById('next-piece');
         nextPiecePreview.innerHTML = '';
         
-        // Dynamically get container dimensions
+        // Get container dimensions - this will now update even when paused
         const containerWidth = nextPiecePreview.parentElement.clientWidth;
         const containerHeight = nextPiecePreview.parentElement.clientHeight;
         
+        // Calculate block size based on current board block size
+        const blockSize = this.board.blockSize;
+        
         // Calculate the piece's total width and height
-        const pieceWidth = this.nextPiece.shape[0].length * this.board.blockSize;
-        const pieceHeight = this.nextPiece.shape.length * this.board.blockSize;
+        const pieceWidth = this.nextPiece.shape[0].length * blockSize;
+        const pieceHeight = this.nextPiece.shape.length * blockSize;
         
         // Calculate the offsets to center the piece
         const offsetX = (containerWidth - pieceWidth) / 2;
@@ -364,8 +369,10 @@ class Game {
                     const block = document.createElement('div');
                     block.className = 'tetromino';
                     block.style.backgroundColor = this.getTetrominoColor(this.nextPiece.type);
-                    block.style.left = `${offsetX + x * this.board.blockSize}px`;
-                    block.style.top = `${offsetY + y * this.board.blockSize}px`;
+                    block.style.left = `${offsetX + x * blockSize}px`;
+                    block.style.top = `${offsetY + y * blockSize}px`;
+                    block.style.width = `${blockSize}px`;
+                    block.style.height = `${blockSize}px`;
                     nextPiecePreview.appendChild(block);
                 }
             }
