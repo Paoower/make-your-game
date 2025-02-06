@@ -3,7 +3,7 @@
 
 ## Project Structure
 ```
-tetris/
+make-your-game/
 │
 ├── index.html                # Main HTML file
 │
