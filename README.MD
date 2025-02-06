@@ -17,24 +17,15 @@ tetris/
 │   ├── board.js              # Game board management
 │   ├── tetromino.js          # Tetromino piece generation
 │   ├── scoreBoard.js         # Score and lives tracking
+│   ├── themeManager.js       # Theme manager functionality
 │   ├── pauseMenu.js          # Pause menu functionality
 │   └── audio.js              # Music and sound management
 │
 ├── styles/
 │   └── style.css             # Game styling
 │
-└── README.md                 # Project documentation
+└── README.md                 
 ```
-
-## Features
-- Classic Tetris gameplay
-- Responsive design
-- Next piece preview
-- Pause/Resume functionality
-- Game over screen
-- Background music
-- Lives system
-- Score tracking
 
 ## Prerequisites
 - Modern web browser
